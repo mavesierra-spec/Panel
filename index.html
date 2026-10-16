@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Financiera - Analizador Inversor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- MENÚ DE NAVEGACIÓN SUPERIOR (CON SOPORTE MÓVIL Y RUTAS RELATIVAS) -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Logo / Inicio -->
+            <div class="flex items-center space-x-3">
+                <a href="./index.html" class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white font-bold flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white">ALPHA<span class="text-blue-500">TERMINAL</span></span>
+                </a>
+            </div>
+
+            <!-- Menú para Escritorio (Pantallas Grandes) -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                <a href="./index.html" class="px-3 py-2 rounded-lg text-sm font-medium bg-blue-600/20 text-blue-400 border border-blue-500/35 transition-colors">INICIO</a>
+                <a href="./bolsa.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">BOLSA</a>
+                <a href="./etf-fondos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">ETF/FONDOS</a>
+                <a href="./crypto.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">CRYPTO</a>
+                <a href="./petroleo-oro.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">PETRÓLEO/ORO</a>
+                <a href="./gobiernos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">GOBIERNOS</a>
+            </nav>
+
+            <!-- Botón del Menú Móvil (Solo visible en pantallas pequeñas) -->
+            <div class="flex md:hidden items-center space-x-2">
+                <button onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white p-2 rounded-lg bg-slate-800 border border-slate-700 focus:outline-none">
+                    <i data-lucide="menu" id="menu-icon-open" class="w-6 h-6"></i>
+                    <i data-lucide="x" id="menu-icon-close" class="w-6 h-6 hidden"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- MENÚ MÓVIL DESPLEGABLE (DRAWER) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-4 space-y-1">
+            <a href="./index.html" class="block px-3 py-2.5 rounded-lg text-base font-semibold bg-blue-600/20 text-blue-400 border border-blue-500/30">1. INICIO</a>
+            <a href="./bolsa.html" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-slate-800 hover:text-white">2. BOLSA</a>
+            <a href="./etf-fondos.html" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-slate-800 hover:text-white">3. ETF / FONDOS</a>
+            <a href="./crypto.html" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-slate-800 hover:text-white">4. CRYPTO</a>
+            <a href="./petroleo-oro.html" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-slate-800 hover:text-white">5. PETRÓLEO / ORO</a>
+            <a href="./gobiernos.html" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-slate-800 hover:text-white">6. GOBIERNOS</a>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL: ANALIZADOR DE NOTICIAS BURSÁTILES -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Barra de Control de Noticias -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="newspaper" class="text-blue-500"></i> Analizador de Noticias Bursátiles & Macro
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Resúmenes ejecutivos con enfoque de analista inversor. Sincronizado cada 60 minutos.</p>
+            </div>
+            <div class="flex items-center justify-between sm:justify-start gap-3">
+                <div class="text-xs text-slate-400 bg-slate-800 px-3 py-2 rounded-lg border border-slate-700">
+                    Auto-actualización: <span id="timer" class="font-mono font-bold text-blue-400">59:59</span>
+                </div>
+                <button onclick="refreshNews()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-600/20">
+                    <i data-lucide="refresh-cw" class="w-4 h-4" id="refresh-icon"></i> Actualizar
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid de Noticias Bursátiles -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Noticia 1: Bolsa -->
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/2">BOLSA / RENTA VARIABLE</span>
+                        <span class="text-xs text-slate-400 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Hace 12 min</span>
+                    </div>
+                    <h2 class="text-base sm:text-lg font-semibold text-white mb-2 leading-snug">Los gigantes tecnológicos sostienen el S&P 500 ante la presión de tipos de interés</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+                        <strong class="text-blue-400">Resumen Analista:</strong> Los resultados trimestrales de mega-caps superan previsiones, compensando el impacto de unos rendimientos de bonos a 10 años que se mantienen elevados. 
+                    </p>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800/80 mb-4 text-xs">
+                        <span class="text-emerald-400 font-semibold">Dictamen Inversor:</span> Oportunidad selectiva en líderes con caja neta positiva. Mantener cautela en valoraciones excesivas.
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Fuente: Bloomberg</span>
+                    <a href="https://www.bloomberg.com" target="_blank" class="text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">Leer original <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                </div>
+            </article>
+
+            <!-- Noticia 2: Cripto -->
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/2">CRYPTO / ACTIVOS DIGITALES</span>
+                        <span class="text-xs text-slate-400 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Hace 28 min</span>
+                    </div>
+                    <h2 class="text-base sm:text-lg font-semibold text-white mb-2 leading-snug">Flujos netos positivos en ETFs de Bitcoin al contado marcan nuevo récord semanal</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+                        <strong class="text-purple-400">Resumen Analista:</strong> La entrada de capital institucional a través de vehículos regulados reduce la liquidez flotante en los exchanges, generando una estructura de soporte alcista sólida.
+                    </p>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800/80 mb-4 text-xs">
+                        <span class="text-emerald-400 font-semibold">Dictamen Inversor:</span> Tendencia alcista estructural a medio plazo. Acumulación progresiva en correcciones de corto plazo.
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Fuente: CoinDesk</span>
+                    <a href="https://www.coindesk.com" target="_blank" class="text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">Leer original <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                </div>
+            </article>
+
+            <!-- Noticia 3: Petróleo / Oro -->
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">PETRÓLEO / ORO & COMMODITIES</span>
+                        <span class="text-xs text-slate-400 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Hace 45 min</span>
+                    </div>
+                    <h2 class="text-base sm:text-lg font-semibold text-white mb-2 leading-snug">El oro consolida máximos impulsado por compras masivas de bancos centrales asiáticos</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+                        <strong class="text-amber-400">Resumen Analista:</strong> Las tensiones geopolíticas globales y la diversificación de reservas lejos del dólar consolidan al oro como el activo refugio por excelencia.
+                    </p>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800/80 mb-4 text-xs">
+                        <span class="text-amber-400 font-semibold">Dictamen Inversor:</span> Mantener asignación táctica en metales preciosos (5-10% del portfolio) como cobertura ante riesgos de cola.
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Fuente: Reuters</span>
+                    <a href="https://www.reuters.com" target="_blank" class="text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">Leer original <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                </div>
+            </article>
+
+            <!-- Noticia 4: Gobiernos / Bancos Centrales -->
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">GOBIERNOS / POLÍTICA MONETARIA</span>
+                        <span class="text-xs text-slate-400 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Hace 1 hora</span>
+                    </div>
+                    <h2 class="text-base sm:text-lg font-semibold text-white mb-2 leading-snug">Los bancos centrales sugieren una senda de recortes de tipos más gradual de lo esperado</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+                        <strong class="text-emerald-400">Resumen Analista:</strong> La persistencia de la inflación en servicios frena las expectativas de flexibilización monetaria agresiva, modulando el optimismo bursátil.
+                    </p>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800/80 mb-4 text-xs">
+                        <span class="text-blue-400 font-semibold">Dictamen Inversor:</span> Priorizar empresas con bajo apalancamiento financiero y alta capacidad de fijación de precios.
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Fuente: Financial Times</span>
+                    <a href="https://www.ft.com" target="_blank" class="text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">Leer original <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                </div>
+            </article>
+
+            <!-- Noticia 5: ETF / Fondos -->
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">ETF / FONDOS DE INVERSIÓN</span>
+                        <span class="text-xs text-slate-400 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> Hace 1 hora</span>
+                    </div>
+                    <h2 class="text-base sm:text-lg font-semibold text-white mb-2 leading-snug">Récord de entradas en fondos indexados globales de gestión pasiva frente a gestión activa</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+                        <strong class="text-indigo-400">Resumen Analista:</strong> La eficiencia en costes y la dificultad histórica de batir consistentemente al índice empujan a los inversores institucionales hacia los ETFs de bajo coste.
+                    </p>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800/80 mb-4 text-xs">
+                        <span class="text-emerald-400 font-semibold">Dictamen Inversor:</span> Core del portfolio basado en ETFs globales de acumulación; satélites en temáticas de alto crecimiento.
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Fuente: Morningstar</span>
+                    <a href="https://www.morningstar.com" target="_blank" class="text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">Leer original <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        AlphaTerminal &copy; 2026. Módulo de Análisis Bursátil Independiente.
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Control del Menú Desplegable en Móvil
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const iconOpen = document.getElementById('menu-icon-open');
+            const iconClose = document.getElementById('menu-icon-close');
+            
+            menu.classList.toggle('hidden');
+            iconOpen.classList.toggle('hidden');
+            iconClose.classList.toggle('hidden');
+        }
+
+        // Temporizador de auto-actualización
+        let timeLeft = 3599;
+        const timerElement = document.getElementById('timer');
+        
+        setInterval(() => {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            if (timeLeft > 0) timeLeft--;
+            else timeLeft = 3600;
+        }, 1000);
+
+        function refreshNews() {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('animate-spin');
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                alert('¡Noticias actualizadas con éxito!');
+            }, 800);
+        }
+    </script>
+</body>
+</html>

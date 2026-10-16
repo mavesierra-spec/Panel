@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOBIERNOS & POLÍTICA MONETARIA - AlphaTerminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- MENÚ DE NAVEGACIÓN SUPERIOR -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white font-bold flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white">ALPHA<span class="text-blue-500">TERMINAL</span></span>
+                </a>
+            </div>
+
+            <!-- Menú de Secciones -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                <a href="index.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">INICIO</a>
+                <a href="bolsa.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">BOLSA</a>
+                <a href="etf-fondos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">ETF/FONDOS</a>
+                <a href="crypto.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">CRYPTO</a>
+                <a href="petroleo-oro.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">PETRÓLEO/ORO</a>
+                <a href="gobiernos.html" class="px-3 py-2 rounded-lg text-sm font-medium bg-blue-600/20 text-blue-400 border border-blue-500/30 transition-colors">GOBIERNOS</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-blue-500/30 flex items-center gap-1.5 transition-all shadow-md">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Inicio
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- CABECERA & CONTROL DE REFRESCADO HORARIO -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+            <div>
+                <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="landmark" class="text-emerald-500"></i> Bancos Centrales & Datos Macroeconómicos (FMI & Consenso)
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">Haz clic sobre cualquier región para desplegar el gráfico histórico de tipos/bonos y las proyecciones de política monetaria.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-xs text-slate-400 bg-slate-800 px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-2">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-blue-400"></i> Sincronizado cada: <span id="timer" class="font-mono font-bold text-blue-400">59:59</span>
+                </div>
+                <button onclick="refreshData()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 shadow-lg shadow-emerald-600/20">
+                    <i data-lucide="refresh-cw" class="w-4 h-4" id="refresh-icon"></i> Actualizar Servidor
+                </button>
+            </div>
+        </div>
+
+        <!-- 1. MATRIZ INTERACTIVA DE TIPOS DE INTERÉS POR PAÍS/REGIÓN -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="globe" class="text-blue-400"></i> Matriz de Tipos de Interés Globales
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Selecciona un país para examinar su gráfico en el panel inferior.</p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase bg-slate-950/60">
+                            <th class="py-3.5 px-4">Región / País</th>
+                            <th class="py-3.5 px-4">Banco Central</th>
+                            <th class="py-3.5 px-4 text-center">Tipo Actual</th>
+                            <th class="py-3.5 px-4 text-center">IPC (Inflación)</th>
+                            <th class="py-3.5 px-4 text-center">Sesgo de Política</th>
+                            <th class="py-3.5 px-4 text-right">Previsión FMI / Mercado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-sm cursor-pointer" id="country-table">
+                        
+                        <!-- EE.UU. -->
+                        <tr onclick="selectRegion('US', 'TVC:US10Y', 'Estados Unidos (Reserva Federal)', '5.25% - 5.50%', '3.1%', 'Presiones de inflación subyacente y tensión en el mercado laboral mantienen abierta la posibilidad de subidas adicionales o manteamiento prolongado (Higher for Longer).')" class="country-row hover:bg-slate-800/60 bg-blue-600/10 transition-colors" id="row-US">
+                            <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="text-base">🇺🇸</span> Estados Unidos
+                            </td>
+                            <td class="py-4 px-4 text-xs text-slate-300">Reserva Federal (Fed)</td>
+                            <td class="py-4 px-4 text-center font-mono font-bold text-white text-base">5.25% - 5.50%</td>
+                            <td class="py-4 px-4 text-center font-mono text-amber-400 font-bold">3.1%</td>
+                            <td class="py-4 px-4 text-center">
+                                <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
+                                    <i data-lucide="arrow-up-right" class="w-3 h-3"></i> Sesgo Alcista / Tensión
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-right text-xs text-slate-300">Mantener o +25 pb si el IPC no cede</td>
+                        </tr>
+
+                        <!-- Eurozona -->
+                        <tr onclick="selectRegion('EU', 'TVC:EU10Y', 'Eurozona (Banco Central Europeo)', '4.50%', '2.6%', 'El BCE vigila los costes salariales. Prevalecen las expectativas de contención con posibilidad de endurecimiento si persisten los cuellos de botella energéticos.')" class="country-row hover:bg-slate-800/60 transition-colors" id="row-EU">
+                            <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="text-base">🇪🇺</span> Eurozona
+                            </td>
+                            <td class="py-4 px-4 text-xs text-slate-300">Banco Central Europeo (BCE)</td>
+                            <td class="py-4 px-4 text-center font-mono font-bold text-white text-base">4.50%</td>
+                            <td class="py-4 px-4 text-center font-mono text-slate-300 font-bold">2.6%</td>
+                            <td class="py-4 px-4 text-center">
+                                <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
+                                    <i data-lucide="arrow-up-right" class="w-3 h-3"></i> Restrictivo / Subidas Tácticas
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-right text-xs text-slate-300">Sin prisa por recortar; vigilancia de IPC</td>
+                        </tr>
+
+                        <!-- Reino Unido -->
+                        <tr onclick="selectRegion('UK', 'TVC:GB10Y', 'Reino Unido (Bank of England)', '5.25%', '3.4%', 'La rigidez del mercado laboral y la inflación en el sector servicios obligan a mantener tipos elevados.')" class="country-row hover:bg-slate-800/60 transition-colors" id="row-UK">
+                            <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="text-base">🇬🇧</span> Reino Unido
+                            </td>
+                            <td class="py-4 px-4 text-xs text-slate-300">Bank of England (BoE)</td>
+                            <td class="py-4 px-4 text-center font-mono font-bold text-white text-base">5.25%</td>
+                            <td class="py-4 px-4 text-center font-mono text-slate-300 font-bold">3.4%</td>
+                            <td class="py-4 px-4 text-center">
+                                <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
+                                    <i data-lucide="arrow-up-right" class="w-3 h-3"></i> Presión de Subida
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-right text-xs text-slate-300">Posible subida adicional de 25 pb</td>
+                        </tr>
+
+                        <!-- Japón -->
+                        <tr onclick="selectRegion('JP', 'TVC:JP10Y', 'Japón (Bank of Japan)', '0.25%', '2.8%', 'El Banco de Japón abandona los tipos negativos y avanza en la normalización monetaria.')" class="country-row hover:bg-slate-800/60 transition-colors" id="row-JP">
+                            <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="text-base">🇯🇵</span> Japón
+                            </td>
+                            <td class="py-4 px-4 text-xs text-slate-300">Bank of Japan (BoJ)</td>
+                            <td class="py-4 px-4 text-center font-mono font-bold text-white text-base">0.25%</td>
+                            <td class="py-4 px-4 text-center font-mono text-slate-300 font-bold">2.8%</td>
+                            <td class="py-4 px-4 text-center">
+                                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
+                                    <i data-lucide="arrow-up-right" class="w-3 h-3"></i> Normalización Alcista
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-right text-xs text-slate-300">Subidas de tipos graduales en 2026</td>
+                        </tr>
+
+                        <!-- China -->
+                        <tr onclick="selectRegion('CN', 'TVC:CN10Y', 'China (People\'s Bank of China)', '3.10%', '0.4%', 'China mantiene medidas de estímulo y liquidez para reactivar el consumo interno.')" class="country-row hover:bg-slate-800/60 transition-colors" id="row-CN">
+                            <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="text-base">🇨🇳</span> China
+                            </td>
+                            <td class="py-4 px-4 text-xs text-slate-300">People's Bank of China (PBoC)</td>
+                            <td class="py-4 px-4 text-center font-mono font-bold text-white text-base">3.10%</td>
+                            <td class="py-4 px-4 text-center font-mono text-slate-300 font-bold">0.4%</td>
+                            <td class="py-4 px-4 text-center">
+                                <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-2.5 py-1 rounded-md inline-flex items-center gap-1">
+                                    <i data-lucide="arrow-down-right" class="w-3 h-3"></i> Estímulo Expansionista
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-right text-xs text-slate-300">Recortes de reservas y tipos del LPR</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 2. PANEL DE DETALLE Y GRÁFICO HISTÓRICO DE LA REGIÓN SELECCIONADA -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2" id="region-title">
+                        <i data-lucide="line-chart" class="text-emerald-400"></i> Gráfico Histórico & Rendimientos: Estados Unidos (Reserva Federal)
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1" id="region-desc">
+                        Evolución de la rentabilidad del bono soberano de referencia y expectativas de política monetaria según el FMI.
+                    </p>
+                </div>
+                <div class="flex items-center gap-4 text-xs bg-slate-950 px-4 py-2 rounded-xl border border-slate-800">
+                    <div>
+                        <span class="text-slate-500 block">Dato Actual</span>
+                        <span class="font-mono font-bold text-white" id="region-rate">5.25% - 5.50%</span>
+                    </div>
+                    <div class="h-6 w-px bg-slate-800"></div>
+                    <div>
+                        <span class="text-slate-500 block">Informe FMI</span>
+                        <span class="font-mono font-bold text-amber-400" id="region-bias">Riesgo Alcista</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenedor del Gráfico de TradingView -->
+            <div class="w-full h-[380px] bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative">
+                <div id="gov_tradingview_container" class="w-full h-full"></div>
+            </div>
+        </section>
+
+        <!-- 3. NOTICIAS MACROECONÓMICAS CON FUENTES Y ENLACES DE ORIGEN -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase flex items-center gap-1.5">
+                    <i data-lucide="newspaper" class="w-4 h-4 text-emerald-400"></i> Noticias de Política Monetaria & Organismos Internacionales (FMI / OCDE)
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Noticia 1 -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">FMI / RESERVA FEDERAL</span>
+                            <span class="text-xs text-slate-500">Hace 20 min</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">El FMI advierte de presiones inflacionarias que podrían exigir nuevas subidas de tipos en EE.UU.</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-amber-400">Resumen Analista:</strong> La fortaleza de la demanda agregada y el déficit fiscal en EE.UU. reducen el margen para recortes inmediatos, manteniendo la alerta sobre repuntes inflacionarios.
+                        </p>
+                        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 mb-4 text-xs text-amber-400">
+                            💡 Dictamen: Mantenimiento de tipos en niveles restrictivos por un periodo prolongado.
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-slate-400">Fuente: IMF.org</span>
+                        <a href="https://www.imf.org" target="_blank" class="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1">Noticia original <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                    </div>
+                </article>
+
+                <!-- Noticia 2 -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">EUROZONA / BCE</span>
+                            <span class="text-xs text-slate-500">Hace 45 min</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">El BCE subraya la prudencia y rechaza asumir una senda predeterminada de bajadas</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-blue-400">Resumen Analista:</strong> Las presiones salariales en los servicios impulsan un enfoque de reunión a reunión sostenido en datos reales de inflación.
+                        </p>
+                        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 mb-4 text-xs text-blue-400">
+                            💡 Dictamen: Sin compromisos de recortes agresivos en el corto plazo.
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-slate-400">Fuente: Bloomberg</span>
+                        <a href="https://www.bloomberg.com" target="_blank" class="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1">Noticia original <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                    </div>
+                </article>
+
+                <!-- Noticia 3 -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">ASIA / BOJ</span>
+                            <span class="text-xs text-slate-500">Hace 1.5 horas</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">El Banco de Japón contempla ajustes adicionales al alza tras consolidarse los incrementos salariales</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-purple-400">Resumen Analista:</strong> La salida del marco de tipos ultra-laxos continúa gradualmente para estabilizar el tipo de cambio del yen.
+                        </p>
+                        <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 mb-4 text-xs text-emerald-400">
+                            💡 Dictamen: Reajuste estructural de flujos de capital globales hacia activos japoneses.
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-slate-400">Fuente: Reuters</span>
+                        <a href="https://www.reuters.com" target="_blank" class="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1">Noticia original <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        AlphaTerminal &copy; 2026. Módulo de Análisis Macroeconómico & Bancos Centrales.
+    </footer>
+
+    <!-- SCRIPT DE TRADINGVIEW & CONTROLADOR INTERACTIVO POR PAÍS -->
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        lucide.createIcons();
+
+        let currentSymbol = 'TVC:US10Y';
+
+        function renderChart(symbol) {
+            document.getElementById('gov_tradingview_container').innerHTML = '';
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "D",
+                "timezone": "Europe/Madrid",
+                "theme": "dark",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#0f172a",
+                "enable_publishing": false,
+                "hide_side_toolbar": true,
+                "allow_symbol_change": false,
+                "container_id": "gov_tradingview_container"
+            });
+        }
+
+        function selectRegion(id, symbol, name, rate, inflation, desc) {
+            // Cambiar estilos de las filas
+            document.querySelectorAll('.country-row').forEach(row => {
+                row.classList.remove('bg-blue-600/10');
+            });
+            const selectedRow = document.getElementById('row-' + id);
+            if (selectedRow) {
+                selectedRow.classList.add('bg-blue-600/10');
+            }
+
+            // Actualizar texto informativo
+            document.getElementById('region-title').innerHTML = `<i data-lucide="line-chart" class="text-emerald-400"></i> Gráfico Histórico & Rendimientos: ${name}`;
+            document.getElementById('region-desc').textContent = desc;
+            document.getElementById('region-rate').textContent = rate;
+            
+            // Renderizar gráfico
+            renderChart(symbol);
+            lucide.createIcons();
+        }
+
+        window.onload = function() {
+            renderChart('TVC:US10Y');
+        };
+
+        // Temporizador de actualización horaria
+        let timeLeft = 3599;
+        const timerElem = document.getElementById('timer');
+
+        setInterval(() => {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerElem.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                timeLeft = 3600;
+                refreshData();
+            }
+        }, 1000);
+
+        function refreshData() {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('animate-spin');
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                alert('¡Datos macroeconómicos, matriz FMI y gráficos históricos revalidados con éxito!');
+            }, 800);
+        }
+    </script>
+</body>
+</html>

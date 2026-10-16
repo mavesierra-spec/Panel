@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRYPTO & ACTIVOS DIGITALES - AlphaTerminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .flash-green { animation: flashGreen 0.5s ease-out; }
+        .flash-red { animation: flashRed 0.5s ease-out; }
+        @keyframes flashGreen { 0% { background-color: rgba(16, 185, 129, 0.3); } 100% { background-color: transparent; } }
+        @keyframes flashRed { 0% { background-color: rgba(239, 68, 68, 0.3); } 100% { background-color: transparent; } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- MENÚ DE NAVEGACIÓN SUPERIOR -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white font-bold flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white">ALPHA<span class="text-blue-500">TERMINAL</span></span>
+                </a>
+            </div>
+
+            <!-- Menú de Secciones -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                <a href="index.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">INICIO</a>
+                <a href="bolsa.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">BOLSA</a>
+                <a href="etf-fondos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">ETF/FONDOS</a>
+                <a href="crypto.html" class="px-3 py-2 rounded-lg text-sm font-medium bg-blue-600/20 text-blue-400 border border-blue-500/30 transition-colors">CRYPTO</a>
+                <a href="petroleo-oro.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">PETRÓLEO/ORO</a>
+                <a href="gobiernos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">GOBIERNOS</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-blue-500/30 flex items-center gap-1.5 transition-all shadow-md">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Inicio
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- CABECERA & BOTÓN INDEPENDIENTE DE ACTUALIZAR -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="coins" class="text-purple-500"></i> Terminal de Criptoactivos (EUR)
+                    </h1>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> TIEMPO REAL
+                    </span>
+                </div>
+                <p class="text-sm text-slate-400 mt-1">Cotizaciones y gráficos actualizados en vivo vía WebSocket continuo.</p>
+            </div>
+            
+            <!-- Botón independiente para actualizar datos de tabla y noticias -->
+            <div class="flex items-center gap-3">
+                <button onclick="refreshData()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 shadow-lg shadow-purple-600/20">
+                    <i data-lucide="refresh-cw" class="w-4 h-4" id="refresh-icon"></i> Actualizar Servidor
+                </button>
+            </div>
+        </div>
+
+        <!-- BANNER DE COTIZACIONES EN TIEMPO REAL (WEBSOCKET LIVE FEED) -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div id="card-btc" class="bg-slate-900 border border-slate-800 p-3 rounded-xl transition-colors">
+                <div class="text-[11px] text-slate-400 font-bold">BTC / EUR</div>
+                <div id="price-btc" class="text-sm font-mono font-bold text-white mt-1">Cargando...</div>
+            </div>
+            <div id="card-eth" class="bg-slate-900 border border-slate-800 p-3 rounded-xl transition-colors">
+                <div class="text-[11px] text-slate-400 font-bold">ETH / EUR</div>
+                <div id="price-eth" class="text-sm font-mono font-bold text-white mt-1">Cargando...</div>
+            </div>
+            <div id="card-sol" class="bg-slate-900 border border-slate-800 p-3 rounded-xl transition-colors">
+                <div class="text-[11px] text-slate-400 font-bold">SOL / EUR</div>
+                <div id="price-sol" class="text-sm font-mono font-bold text-white mt-1">Cargando...</div>
+            </div>
+            <div id="card-xrp" class="bg-slate-900 border border-slate-800 p-3 rounded-xl transition-colors">
+                <div class="text-[11px] text-slate-400 font-bold">XRP / EUR</div>
+                <div id="price-xrp" class="text-sm font-mono font-bold text-white mt-1">Cargando...</div>
+            </div>
+            <div id="card-atom" class="bg-slate-900 border border-slate-800 p-3 rounded-xl transition-colors">
+                <div class="text-[11px] text-slate-400 font-bold">ATOM / EUR</div>
+                <div id="price-atom" class="text-sm font-mono font-bold text-white mt-1">Cargando...</div>
+            </div>
+            <div id="card-ton" class="bg-slate-900 border border-slate-800 p-3 rounded-xl transition-colors">
+                <div class="text-[11px] text-slate-400 font-bold">TON / EUR</div>
+                <div id="price-ton" class="text-sm font-mono font-bold text-white mt-1">Cargando...</div>
+            </div>
+        </div>
+
+        <!-- 1. BLOQUE DE GRÁFICOS DINÁMICOS TIEMPO REAL (WEBSOCKET STREAMING) -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="activity" class="text-purple-400"></i> Gráfico Interactivo en Tiempo Real
+                    </h2>
+                    <p class="text-xs text-slate-400">Transmisión de velas japonesas en vivo vía WebSocket.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Selector Criptos (EUR) -->
+                    <div class="flex flex-wrap gap-1.5" id="crypto-selector">
+                        <button onclick="selectCrypto('BINANCE:BTCEUR', 'BTC')" id="btn-BTC" class="crypto-btn bg-purple-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all">BTC/EUR</button>
+                        <button onclick="selectCrypto('BINANCE:ETHEUR', 'ETH')" id="btn-ETH" class="crypto-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">ETH/EUR</button>
+                        <button onclick="selectCrypto('BINANCE:SOLEUR', 'SOL')" id="btn-SOL" class="crypto-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">SOL/EUR</button>
+                        <button onclick="selectCrypto('BINANCE:XRPEUR', 'XRP')" id="btn-XRP" class="crypto-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">XRP/EUR</button>
+                        <button onclick="selectCrypto('BINANCE:ATOMEUR', 'ATOM')" id="btn-ATOM" class="crypto-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">ATOM/EUR</button>
+                        <button onclick="selectCrypto('OKX:TONEUR', 'TON')" id="btn-TON" class="crypto-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">TON/EUR</button>
+                    </div>
+
+                    <div class="h-4 w-px bg-slate-800 hidden lg:block"></div>
+
+                    <!-- Selector de Temporalidad (5m, 15m, 1h, 4h, 1D) -->
+                    <div class="flex bg-slate-950 p-1 rounded-lg border border-slate-800" id="timeframe-selector">
+                        <button onclick="changeInterval('5')" id="tf-5" class="tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">5m</button>
+                        <button onclick="changeInterval('15')" id="tf-15" class="tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">15m</button>
+                        <button onclick="changeInterval('60')" id="tf-60" class="tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">1h</button>
+                        <button onclick="changeInterval('240')" id="tf-240" class="tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">4h</button>
+                        <button onclick="changeInterval('D')" id="tf-D" class="tf-btn bg-purple-600 text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">1D</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenedor del Gráfico Compacto y Rápido -->
+            <div class="w-full h-[400px] bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative">
+                <div id="crypto_tradingview_container" class="w-full h-full"></div>
+            </div>
+        </section>
+
+        <!-- 2. MOTOR TOP 5 OPORTUNIDADES CRYPTO (EUR) -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="zap" class="text-amber-400"></i> TOP 5 Oportunidades Cripto (EUR)
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Ranking calculado comparando presión compradora en Order Books, volumen acumulado y estructura de tendencia.</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="bg-purple-500/10 text-purple-400 border border-purple-500/20 px-3 py-1.5 rounded-lg font-mono font-bold">Algoritmo Volume-Delta v2.4</span>
+                </div>
+            </div>
+
+            <!-- Tabla Top 5 en EUR -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase bg-slate-950/60">
+                            <th class="py-3 px-4"># Rank</th>
+                            <th class="py-3 px-4">Criptoactivo</th>
+                            <th class="py-3 px-4 text-right">Precio Real (€)</th>
+                            <th class="py-3 px-4 text-right">Var. 24h</th>
+                            <th class="py-3 px-4 text-center">Presión Compra / Venta</th>
+                            <th class="py-3 px-4 text-center">Tendencia Técnica</th>
+                            <th class="py-3 px-4 text-right">Score Inversor</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-sm">
+                        <!-- Rank 1 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-amber-400">01</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center">₿</span>
+                                <span>Bitcoin</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">BTC/EUR</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-white" id="tb-btc">62.150,00 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+3.82%</td>
+                            <td class="py-3.5 px-4">
+                                <div class="w-full max-w-[120px] mx-auto bg-slate-800 h-2 rounded-full overflow-hidden flex">
+                                    <div class="bg-emerald-500 h-full" style="width: 68%;"></div>
+                                    <div class="bg-red-500 h-full" style="width: 32%;"></div>
+                                </div>
+                                <div class="text-[10px] text-center font-mono text-emerald-400 mt-1">68% Compradores</div>
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md flex items-center justify-center gap-1 w-max mx-auto">
+                                    <i data-lucide="trending-up" class="w-3 h-3"></i> Alcista Fuerte
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-emerald-400 text-base">9.4 / 10</td>
+                        </tr>
+
+                        <!-- Rank 2 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-amber-400">02</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center">◎</span>
+                                <span>Solana</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">SOL/EUR</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-white" id="tb-sol">145,80 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+6.15%</td>
+                            <td class="py-3.5 px-4">
+                                <div class="w-full max-w-[120px] mx-auto bg-slate-800 h-2 rounded-full overflow-hidden flex">
+                                    <div class="bg-emerald-500 h-full" style="width: 72%;"></div>
+                                    <div class="bg-red-500 h-full" style="width: 28%;"></div>
+                                </div>
+                                <div class="text-[10px] text-center font-mono text-emerald-400 mt-1">72% Compradores</div>
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md flex items-center justify-center gap-1 w-max mx-auto">
+                                    <i data-lucide="trending-up" class="w-3 h-3"></i> Ruptura Volatilidad
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-emerald-400 text-base">9.1 / 10</td>
+                        </tr>
+
+                        <!-- Rank 3 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-amber-400">03</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xs flex items-center justify-center">Ξ</span>
+                                <span>Ethereum</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">ETH/EUR</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-white" id="tb-eth">2.432,80 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+2.10%</td>
+                            <td class="py-3.5 px-4">
+                                <div class="w-full max-w-[120px] mx-auto bg-slate-800 h-2 rounded-full overflow-hidden flex">
+                                    <div class="bg-emerald-500 h-full" style="width: 58%;"></div>
+                                    <div class="bg-red-500 h-full" style="width: 42%;"></div>
+                                </div>
+                                <div class="text-[10px] text-center font-mono text-slate-300 mt-1">58% Compradores</div>
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-2.5 py-1 rounded-md flex items-center justify-center gap-1 w-max mx-auto">
+                                    <i data-lucide="minus" class="w-3 h-3"></i> Acumulación
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-blue-400 text-base">8.5 / 10</td>
+                        </tr>
+
+                        <!-- Rank 4 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">04</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-xs flex items-center justify-center">⚡</span>
+                                <span>Toncoin (Gram)</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">TON/EUR</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-white" id="tb-ton">4,83 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+4.40%</td>
+                            <td class="py-3.5 px-4">
+                                <div class="w-full max-w-[120px] mx-auto bg-slate-800 h-2 rounded-full overflow-hidden flex">
+                                    <div class="bg-emerald-500 h-full" style="width: 61%;"></div>
+                                    <div class="bg-red-500 h-full" style="width: 39%;"></div>
+                                </div>
+                                <div class="text-[10px] text-center font-mono text-emerald-400 mt-1">61% Compradores</div>
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md flex items-center justify-center gap-1 w-max mx-auto">
+                                    <i data-lucide="trending-up" class="w-3 h-3"></i> Rebote Técnico
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-emerald-400 text-base">8.2 / 10</td>
+                        </tr>
+
+                        <!-- Rank 5 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">05</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 font-bold text-xs flex items-center justify-center">✕</span>
+                                <span>XRP</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">XRP/EUR</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-white" id="tb-xrp">0,504 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+1.85%</td>
+                            <td class="py-3.5 px-4">
+                                <div class="w-full max-w-[120px] mx-auto bg-slate-800 h-2 rounded-full overflow-hidden flex">
+                                    <div class="bg-emerald-500 h-full" style="width: 53%;"></div>
+                                    <div class="bg-red-500 h-full" style="width: 47%;"></div>
+                                </div>
+                                <div class="text-[10px] text-center font-mono text-slate-300 mt-1">53% Compradores</div>
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <span class="bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold px-2.5 py-1 rounded-md flex items-center justify-center gap-1 w-max mx-auto">
+                                    <i data-lucide="minus" class="w-3 h-3"></i> Consolidación
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-slate-300 text-base">7.8 / 10</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. NOTICIAS CRIPTO CON ENFOQUE DE ANALISTA INVERSOR -->
+        <section>
+            <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center gap-1.5">
+                <i data-lucide="newspaper" class="w-4 h-4 text-purple-400"></i> Análisis & Noticias de Activos Digitales
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">LIQUIDEZ / ON-CHAIN</span>
+                            <span class="text-xs text-slate-500">Hace 18 min</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Las reservas de Bitcoin en exchanges caen a mínimos no vistos desde 2018</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-purple-400">Análisis Inversor:</strong> La salida continua de BTC hacia custodia fría reduce la oferta disponible en libros de órdenes, amplificando el impacto de las compras de ETFs.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-emerald-400 font-medium">
+                        💡 Dictamen: Escasez de oferta (Supply Crunch) favorable para subidas de medio plazo.
+                    </div>
+                </article>
+
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">ALTCOINS / LAYER 1</span>
+                            <span class="text-xs text-slate-500">Hace 45 min</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Solana y Toncoin lideran en volumen diario impulsadas por la adopción DeFi y DApps</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-blue-400">Análisis Inversor:</strong> El crecimiento en comisiones de red y usuarios activos diarios refuerza los fundamentos de valoración en los ecosistemas de alta velocidad.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-blue-400 font-medium">
+                        💡 Dictamen: Mantenimiento de posición compradora en correcciones intradía.
+                    </div>
+                </article>
+
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">REGULACIÓN / MACRO</span>
+                            <span class="text-xs text-slate-500">Hace 1.5 horas</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Nuevos marcos regulatorios MiCA en Europa ofrecen estabilidad jurídica a los emisores</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-amber-400">Análisis Inversor:</strong> La claridad normativa facilita que la banca privada tradicional emita productos estructurados indexados a criptoactivos para clientes de alto patrimonio.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-amber-400 font-medium">
+                        💡 Dictamen: Reducción del riesgo regulatorio estructural en la Eurozona.
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        AlphaTerminal &copy; 2026. Módulo de Análisis de Criptoactivos & Activos Digitales.
+    </footer>
+
+    <!-- SCRIPT TRADINGVIEW & WEBSOCKET DE PRECIOS EN TIEMPO REAL -->
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        lucide.createIcons();
+
+        let currentSymbol = 'BINANCE:BTCEUR';
+        let currentInterval = 'D';
+
+        function renderChart() {
+            document.getElementById('crypto_tradingview_container').innerHTML = '';
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": currentSymbol,
+                "interval": currentInterval,
+                "timezone": "Europe/Madrid",
+                "theme": "dark",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#0f172a",
+                "enable_publishing": false,
+                "hide_side_toolbar": true,
+                "allow_symbol_change": false,
+                "container_id": "crypto_tradingview_container"
+            });
+        }
+
+        function selectCrypto(symbol, name) {
+            currentSymbol = symbol;
+            
+            document.querySelectorAll('.crypto-btn').forEach(btn => {
+                btn.className = 'crypto-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all';
+            });
+            const activeBtn = document.getElementById('btn-' + name);
+            if (activeBtn) {
+                activeBtn.className = 'crypto-btn bg-purple-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all';
+            }
+
+            renderChart();
+        }
+
+        function changeInterval(tf) {
+            currentInterval = tf;
+
+            document.querySelectorAll('.tf-btn').forEach(btn => {
+                btn.className = 'tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all';
+            });
+            const activeTf = document.getElementById('tf-' + tf);
+            if (activeTf) {
+                activeTf.className = 'tf-btn bg-purple-600 text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all';
+            }
+
+            renderChart();
+        }
+
+        // CONEXIÓN WEBSOCKET DIRECTA A BINANCE PARA PRECIOS TICK-A-TICK EN TIEMPO REAL EN EUR
+        function initRealtimeWebSocket() {
+            const streams = 'btceur@ticker/etheur@ticker/soleur@ticker/xrpeur@ticker/atomeur@ticker/toneur@ticker';
+            const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${streams}`);
+
+            const prevPrices = {};
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (!data.s) return;
+
+                const symbolMap = {
+                    'BTCEUR': { card: 'price-btc', box: 'card-btc', table: 'tb-btc' },
+                    'ETHEUR': { card: 'price-eth', box: 'card-eth', table: 'tb-eth' },
+                    'SOLEUR': { card: 'price-sol', box: 'card-sol', table: 'tb-sol' },
+                    'XRPEUR': { card: 'price-xrp', box: 'card-xrp', table: 'tb-xrp' },
+                    'ATOMEUR': { card: 'price-atom', box: 'card-atom', table: 'tb-atom' },
+                    'TONEUR': { card: 'price-ton', box: 'card-ton', table: 'tb-ton' }
+                };
+
+                const item = symbolMap[data.s];
+                if (item) {
+                    const price = parseFloat(data.c).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 4 }) + ' €';
+                    const priceElem = document.getElementById(item.card);
+                    const tableElem = document.getElementById(item.table);
+                    const boxElem = document.getElementById(item.box);
+
+                    if (priceElem) priceElem.textContent = price;
+                    if (tableElem) tableElem.textContent = price;
+
+                    // Efecto de parpadeo verde/rojo según subida o bajada
+                    if (prevPrices[data.s]) {
+                        if (parseFloat(data.c) > prevPrices[data.s]) {
+                            boxElem.classList.add('flash-green');
+                            setTimeout(() => boxElem.classList.remove('flash-green'), 500);
+                        } else if (parseFloat(data.c) < prevPrices[data.s]) {
+                            boxElem.classList.add('flash-red');
+                            setTimeout(() => boxElem.classList.remove('flash-red'), 500);
+                        }
+                    }
+                    prevPrices[data.s] = parseFloat(data.c);
+                }
+            };
+        }
+
+        window.onload = function() {
+            renderChart();
+            initRealtimeWebSocket();
+        };
+
+        // Botón independiente de actualización
+        function refreshData() {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('animate-spin');
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                alert('¡Conexión del servidor sincronizada con el feed en tiempo real!');
+            }, 600);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOLSA & RENTA VARIABLE - AlphaTerminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        /* Estilo para barra de scroll en tablas o pestañas */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- MENÚ DE NAVEGACIÓN SUPERIOR -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white font-bold flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white">ALPHA<span class="text-blue-500">TERMINAL</span></span>
+                </a>
+            </div>
+
+            <!-- Menú de Secciones -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                <a href="index.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">INICIO</a>
+                <a href="bolsa.html" class="px-3 py-2 rounded-lg text-sm font-medium bg-blue-600/20 text-blue-400 border border-blue-500/30 transition-colors">BOLSA</a>
+                <a href="etf-fondos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">ETF/FONDOS</a>
+                <a href="crypto.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">CRYPTO</a>
+                <a href="petroleo-oro.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">PETRÓLEO/ORO</a>
+                <a href="gobiernos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">GOBIERNOS</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-blue-500/30 flex items-center gap-1.5 transition-all shadow-md">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Inicio
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- CABECERA & BOTÓN DE ACTUALIZAR -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+            <div>
+                <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="line-chart" class="text-blue-500"></i> Análisis de Bolsa & Renta Variable
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">Monitoreo de índices, gráficos técnicos interactivos y top 10 de oportunidades en renta variable española e internacional.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="refreshData()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
+                    <i data-lucide="refresh-cw" class="w-4 h-4" id="refresh-icon"></i> Actualizar Mercado
+                </button>
+            </div>
+        </div>
+
+        <!-- 1. BLOQUE DE ÍNDICES PRINCIPALES (INCLUYE IBEX 35) -->
+        <section>
+            <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-3 flex items-center gap-1.5">
+                <i data-lucide="globe" class="w-4 h-4 text-blue-400"></i> Índices Bursátiles Globales
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <!-- IBEX 35 -->
+                <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-medium">
+                        <span>IBEX 35 (España)</span>
+                        <span class="text-emerald-400 font-bold flex items-center gap-0.5"><i data-lucide="trending-up" class="w-3 h-3"></i> +0.65%</span>
+                    </div>
+                    <div class="text-xl font-bold text-white mt-2">11.845,20 <span class="text-xs text-slate-500 font-normal">EUR</span></div>
+                </div>
+                <!-- S&P 500 -->
+                <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-medium">
+                        <span>S&P 500 (EE.UU.)</span>
+                        <span class="text-emerald-400 font-bold flex items-center gap-0.5"><i data-lucide="trending-up" class="w-3 h-3"></i> +0.42%</span>
+                    </div>
+                    <div class="text-xl font-bold text-white mt-2">5.815,40 <span class="text-xs text-slate-500 font-normal">USD</span></div>
+                </div>
+                <!-- NASDAQ 100 -->
+                <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-medium">
+                        <span>NASDAQ 100</span>
+                        <span class="text-emerald-400 font-bold flex items-center gap-0.5"><i data-lucide="trending-up" class="w-3 h-3"></i> +0.88%</span>
+                    </div>
+                    <div class="text-xl font-bold text-white mt-2">20.350,10 <span class="text-xs text-slate-500 font-normal">USD</span></div>
+                </div>
+                <!-- EURO STOXX 50 -->
+                <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl">
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-medium">
+                        <span>EURO STOXX 50</span>
+                        <span class="text-emerald-400 font-bold flex items-center gap-0.5"><i data-lucide="trending-up" class="w-3 h-3"></i> +0.31%</span>
+                    </div>
+                    <div class="text-xl font-bold text-white mt-2">4.980,60 <span class="text-xs text-slate-500 font-normal">EUR</span></div>
+                </div>
+                <!-- NIKKEI 225 -->
+                <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl col-span-2 sm:col-span-1">
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-medium">
+                        <span>NIKKEI 225 (Japón)</span>
+                        <span class="text-red-400 font-bold flex items-center gap-0.5"><i data-lucide="trending-down" class="w-3 h-3"></i> -0.18%</span>
+                    </div>
+                    <div class="text-xl font-bold text-white mt-2">38.920,00 <span class="text-xs text-slate-500 font-normal">JPY</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SECCIÓN DE GRÁFICOS INTERACTIVOS (SABADELL, IBERDROLA, TELEFÓNICA, RED ELÉCTRICA, INDITEX) -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="candlestick-chart" class="text-blue-500"></i> Gráficos Interáctivos Técnicos
+                    </h2>
+                    <p class="text-xs text-slate-400">Selecciona una compañía para cargar su gráfico interactivo con análisis técnico en tiempo real.</p>
+                </div>
+
+                <!-- Botones selector de acciones -->
+                <div class="flex flex-wrap gap-2" id="stock-selector">
+                    <button onclick="loadChart('BME:SAB', 'Sabadell')" id="btn-Sabadell" class="stock-btn bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">Banco Sabadell</button>
+                    <button onclick="loadChart('BME:IBE', 'Iberdrola')" id="btn-Iberdrola" class="stock-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">Iberdrola</button>
+                    <button onclick="loadChart('BME:TEF', 'Telefonica')" id="btn-Telefonica" class="stock-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">Telefónica</button>
+                    <button onclick="loadChart('BME:RED', 'RedElectrica')" id="btn-RedElectrica" class="stock-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">Red Eléctrica (Redeia)</button>
+                    <button onclick="loadChart('BME:ITX', 'Inditex')" id="btn-Inditex" class="stock-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">Inditex</button>
+                </div>
+            </div>
+
+            <!-- Contenedor del Gráfico TradingView -->
+            <div class="w-full h-[450px] bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative">
+                <div id="tradingview_widget_container" class="w-full h-full"></div>
+            </div>
+        </section>
+
+        <!-- 3. NOTICIAS MÁS IMPORTANTES (ROL ANALISTA BURSÁTIL) -->
+        <section>
+            <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center gap-1.5">
+                <i data-lucide="newspaper" class="w-4 h-4 text-blue-400"></i> Noticias Destacadas de Bolsa & Renta Variable
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Noticia 1 -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">BANCA / IBEX 35</span>
+                            <span class="text-xs text-slate-500">Hace 30 min</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">El Banco Sabadell eleva su margen neto respaldado por el crédito corporativo</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-blue-400">Resumen Analista:</strong> La entidad bancaria mantiene la solidez de sus márgenes de interés pese a la senda de tipos del BCE, reforzando la retribución al accionista vía dividendos.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-emerald-400 font-medium">
+                        💡 Opinión: Perfil atractivo por rentabilidad por dividendo (>7.5%) y baja valoración fundamental.
+                    </div>
+                </article>
+
+                <!-- Noticia 2 -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">UTILITIES / REDES</span>
+                            <span class="text-xs text-slate-500">Hace 1 hora</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Iberdrola y Redeia aceleran el plan de inversión en redes de transmisión eléctrica</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-amber-400">Resumen Analista:</strong> Las regulaciones europeas blindan los retornos garantizados en activos de red, ofreciendo gran visibilidad de flujo de caja defensivo.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-blue-400 font-medium">
+                        💡 Opinión: Excelente cobertura defensiva en momentos de incertidumbre macroeconómica.
+                    </div>
+                </article>
+
+                <!-- Noticia 3 -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">CONSUMO / MODA</span>
+                            <span class="text-xs text-slate-500">Hace 2 horas</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Inditex amplía distancias frente a sus competidores gracias a la integración omnicanal</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-purple-400">Resumen Analista:</strong> La multinacional textil muestra una capacidad superior de generación de caja neta y optimización del inventario en tiempo real.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-emerald-400 font-medium">
+                        💡 Opinión: Líder indiscutible en su sector. Mantener en cartera de crecimiento de calidad.
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- 4. MOTOR TOP 10 INVERSIÓN (SEGÚN ANÁLISIS DE DATOS Y CONCENSO) -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="award" class="text-amber-400"></i> TOP 10 Oportunidades de Inversión en Bolsa
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Ranking elaborado mediante algoritmo de valoración fundamental, descuento por PER y consenso de analistas.</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">Filtro: <strong class="text-blue-400">Ibex 35 & Mercado Español</strong></span>
+                </div>
+            </div>
+
+            <!-- Tabla Top 10 -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase bg-slate-950/60">
+                            <th class="py-3 px-4"># Rank</th>
+                            <th class="py-3 px-4">Empresa</th>
+                            <th class="py-3 px-4">Sector</th>
+                            <th class="py-3 px-4 text-right">Cotización</th>
+                            <th class="py-3 px-4 text-right">Potencial Alcista</th>
+                            <th class="py-3 px-4 text-right">PER Est.</th>
+                            <th class="py-3 px-4 text-right">Div. Yield</th>
+                            <th class="py-3 px-4 text-center">Recomendación</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-sm">
+                        <!-- Item 1 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-amber-400">01</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>IAG (Iberia)</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">IAG.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Aerolíneas / Turismo</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">2.84 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+22.4%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">6.4x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">4.8%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md">COMPRAR</span></td>
+                        </tr>
+                        <!-- Item 2 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-amber-400">02</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Rovi</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">ROVI.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Farmacéutica</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">78.50 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+19.8%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">21.7x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">2.1%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md">COMPRAR</span></td>
+                        </tr>
+                        <!-- Item 3 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-amber-400">03</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Sacyr</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">SCYR.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Infraestructuras</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">3.42 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+16.4%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">11.2x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">5.6%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md">COMPRAR</span></td>
+                        </tr>
+                        <!-- Item 4 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">04</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Banco Sabadell</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">SAB.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Banca / Financiero</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">1.88 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+18.2%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">6.1x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">7.8%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md">COMPRAR</span></td>
+                        </tr>
+                        <!-- Item 5 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">05</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Iberdrola</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">IBE.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Energía / Utilities</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">13.85 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+12.5%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">14.3x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">4.7%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-2.5 py-1 rounded-md">SOBREPONDERAR</span></td>
+                        </tr>
+                        <!-- Item 6 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">06</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Inditex</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">ITX.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Retail / Moda</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">52.10 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+11.0%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">22.5x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">3.2%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-2.5 py-1 rounded-md">SOBREPONDERAR</span></td>
+                        </tr>
+                        <!-- Item 7 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">07</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Acerinox</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">ACX.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Materiales / Aceros</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">10.45 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+24.0%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">10.6x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">5.9%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-md">COMPRAR</span></td>
+                        </tr>
+                        <!-- Item 8 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">08</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Redeia (REE)</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">RED.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Redes Eléctricas</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">16.62 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+10.2%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">13.8x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">6.0%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold px-2.5 py-1 rounded-md">MANTENER</span></td>
+                        </tr>
+                        <!-- Item 9 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">09</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Telefónica</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">TEF.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Telecomunicaciones</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">4.28 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+11.5%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">10.1x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">7.0%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold px-2.5 py-1 rounded-md">MANTENER</span></td>
+                        </tr>
+                        <!-- Item 10 -->
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-400">10</td>
+                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                                <span>Indra</span>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">IDR.MC</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-300 text-xs">Tecnología & Defensa</td>
+                            <td class="py-3.5 px-4 text-right font-mono font-medium">17.20 €</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-emerald-400 font-semibold">+15.8%</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">12.9x</td>
+                            <td class="py-3.5 px-4 text-right font-mono text-slate-300">1.8%</td>
+                            <td class="py-3.5 px-4 text-center"><span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-2.5 py-1 rounded-md">SOBREPONDERAR</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        AlphaTerminal &copy; 2026. Módulo de Renta Variable e Índices Bursátiles.
+    </footer>
+
+    <!-- SCRIPT DE TRADINGVIEW Y FUNCIONALIDADES -->
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Widget de TradingView para la sección de gráficos
+        let widget;
+
+        function loadChart(symbol, name) {
+            // Actualizar estilo visual de los botones
+            document.querySelectorAll('.stock-btn').forEach(btn => {
+                btn.className = 'stock-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all';
+            });
+            const activeBtn = document.getElementById('btn-' + name);
+            if (activeBtn) {
+                activeBtn.className = 'stock-btn bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all';
+            }
+
+            // Renderizar el widget interactivo
+            document.getElementById('tradingview_widget_container').innerHTML = '';
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "D",
+                "timezone": "Europe/Madrid",
+                "theme": "dark",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#0f172a",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "container_id": "tradingview_widget_container"
+            });
+        }
+
+        // Cargar por defecto Banco Sabadell al iniciar la página
+        window.onload = function() {
+            loadChart('BME:SAB', 'Sabadell');
+        };
+
+        // Función de refresco
+        function refreshData() {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('animate-spin');
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                alert('¡Datos de cotizaciones y análisis técnico actualizados!');
+            }, 800);
+        }
+    </script>
+</body>
+</html>

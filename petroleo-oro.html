@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PETRÓLEO, ORO & DIVISAS - AlphaTerminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .flash-green { animation: flashGreen 0.5s ease-out; }
+        .flash-red { animation: flashRed 0.5s ease-out; }
+        @keyframes flashGreen { 0% { background-color: rgba(16, 185, 129, 0.3); } 100% { background-color: transparent; } }
+        @keyframes flashRed { 0% { background-color: rgba(239, 68, 68, 0.3); } 100% { background-color: transparent; } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- MENÚ DE NAVEGACIÓN SUPERIOR -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white font-bold flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white">ALPHA<span class="text-blue-500">TERMINAL</span></span>
+                </a>
+            </div>
+
+            <!-- Menú de Secciones -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                <a href="index.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">INICIO</a>
+                <a href="bolsa.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">BOLSA</a>
+                <a href="etf-fondos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">ETF/FONDOS</a>
+                <a href="crypto.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">CRYPTO</a>
+                <a href="petroleo-oro.html" class="px-3 py-2 rounded-lg text-sm font-medium bg-blue-600/20 text-blue-400 border border-blue-500/30 transition-colors">PETRÓLEO/ORO</a>
+                <a href="gobiernos.html" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">GOBIERNOS</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-blue-500/30 flex items-center gap-1.5 transition-all shadow-md">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a Inicio
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- CABECERA & BOTÓN DE ACTUALIZAR -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="flame" class="text-amber-500"></i> Commodities & Divisas (Petróleo Brent, Oro & EUR/USD)
+                    </h1>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> EN DIRECTO
+                    </span>
+                </div>
+                <p class="text-sm text-slate-400 mt-1">Análisis táctico del crudo europeo, metales preciosos en euros y la relación de tipo de cambio Euro-Dólar.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="refreshData()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 shadow-lg shadow-amber-600/20">
+                    <i data-lucide="refresh-cw" class="w-4 h-4" id="refresh-icon"></i> Actualizar Materias Primas
+                </button>
+            </div>
+        </div>
+
+        <!-- TICKER DE COTIZACIONES DE MATERIAS PRIMAS Y DIVISA -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div id="card-brent" class="bg-slate-900 border border-slate-800 p-4 rounded-xl transition-colors">
+                <div class="flex items-center justify-between text-xs text-slate-400 font-bold">
+                    <span>PETRÓLEO BRENT</span>
+                    <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-amber-400">UKOIL</span>
+                </div>
+                <div id="price-brent" class="text-lg font-mono font-bold text-white mt-1">78.45 USD/bbl</div>
+                <div class="text-[10px] text-emerald-400 mt-1 font-mono">+1.12% hoy</div>
+            </div>
+
+            <div id="card-oro" class="bg-slate-900 border border-slate-800 p-4 rounded-xl transition-colors">
+                <div class="flex items-center justify-between text-xs text-slate-400 font-bold">
+                    <span>ORO SPOT</span>
+                    <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-amber-400">XAU / EUR</span>
+                </div>
+                <div id="price-oro" class="text-lg font-mono font-bold text-white mt-1">2.415,80 €/oz</div>
+                <div class="text-[10px] text-emerald-400 mt-1 font-mono">+0.68% hoy</div>
+            </div>
+
+            <div id="card-plata" class="bg-slate-900 border border-slate-800 p-4 rounded-xl transition-colors">
+                <div class="flex items-center justify-between text-xs text-slate-400 font-bold">
+                    <span>PLATA SPOT</span>
+                    <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">XAG / EUR</span>
+                </div>
+                <div id="price-plata" class="text-lg font-mono font-bold text-white mt-1">28,95 €/oz</div>
+                <div class="text-[10px] text-emerald-400 mt-1 font-mono">+0.45% hoy</div>
+            </div>
+
+            <div id="card-eurusd" class="bg-slate-900 border border-slate-800 p-4 rounded-xl transition-colors">
+                <div class="flex items-center justify-between text-xs text-slate-400 font-bold">
+                    <span>CAMBIO DIVISA</span>
+                    <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-blue-400">EUR / USD</span>
+                </div>
+                <div id="price-eurusd" class="text-lg font-mono font-bold text-white mt-1">1,0865 USD</div>
+                <div class="text-[10px] text-red-400 mt-1 font-mono">-0.15% hoy</div>
+            </div>
+        </div>
+
+        <!-- 1. BLOQUE DE GRÁFICOS INTERACTIVOS (BRENT, ORO, PLATA, EUR/USD) -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="bar-chart-3" class="text-amber-400"></i> Gráfico Técnico en Tiempo Real
+                    </h2>
+                    <p class="text-xs text-slate-400">Cotización directa del crudo de referencia en Europa, metales y divisa.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Selector de Activo -->
+                    <div class="flex flex-wrap gap-1.5" id="asset-selector">
+                        <button onclick="selectAsset('TVC:UKOIL', 'BRENT')" id="btn-BRENT" class="asset-btn bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Petróleo Brent</button>
+                        <button onclick="selectAsset('OANDA:XAUEUR', 'ORO')" id="btn-ORO" class="asset-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Oro (XAU/EUR)</button>
+                        <button onclick="selectAsset('OANDA:XAGEUR', 'PLATA')" id="btn-PLATA" class="asset-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Plata (XAG/EUR)</button>
+                        <button onclick="selectAsset('FX:EURUSD', 'EURUSD')" id="btn-EURUSD" class="asset-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">EUR / USD</button>
+                    </div>
+
+                    <div class="h-4 w-px bg-slate-800 hidden lg:block"></div>
+
+                    <!-- Selector de Temporalidades -->
+                    <div class="flex bg-slate-950 p-1 rounded-lg border border-slate-800">
+                        <button onclick="changeInterval('5')" id="tf-5" class="tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">5m</button>
+                        <button onclick="changeInterval('15')" id="tf-15" class="tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">15m</button>
+                        <button onclick="changeInterval('60')" id="tf-60" class="tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">1h</button>
+                        <button onclick="changeInterval('240')" id="tf-240" class="tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">4h</button>
+                        <button onclick="changeInterval('D')" id="tf-D" class="tf-btn bg-amber-600 text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all">1D</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenedor del Gráfico -->
+            <div class="w-full h-[420px] bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative">
+                <div id="commodities_tradingview_container" class="w-full h-full"></div>
+            </div>
+        </section>
+
+        <!-- 2. ANÁLISIS MACROECONÓMICO Y NOTICIAS GLOBALES EN DIRECTO -->
+        <section>
+            <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center gap-1.5">
+                <i data-lucide="globe-2" class="w-4 h-4 text-amber-400"></i> Noticias Geopolíticas & Estratégicas de Mercado
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Noticia 1: Petróleo -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">PETRÓLEO BRENT / OPEP+</span>
+                            <span class="text-xs text-slate-500">Hace 25 min</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">La OPEP+ extiende los recortes voluntarios de producción de crudo</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-amber-400">Visión de Analista:</strong> El cartel petrolero mantiene una estricta disciplina de oferta para defender el suelo del barril Brent en torno a los 75-80 USD ante la ralentización industrial europea.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-emerald-400 font-medium">
+                        💡 Impacto: Soporte claro de precios en compañías petroleras integradas (Repsol, TotalEnergies).
+                    </div>
+                </article>
+
+                <!-- Noticia 2: Oro / Metales -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">METALES PRECIOSOS</span>
+                            <span class="text-xs text-slate-500">Hace 50 min</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">Las compras de oro por bancos centrales europeos alcanzan cifras récord en la década</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-yellow-400">Visión de Analista:</strong> La diversificación de reservas para reducir la exposición al billete verde impulsa cotizaciones del oro spot denominadas en euros a máximos.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-yellow-400 font-medium">
+                        💡 Impacto: Mantener coberturas estructurales en metales físicos o minerías de oro de bajo coste.
+                    </div>
+                </article>
+
+                <!-- Noticia 3: EUR / USD -->
+                <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">DIVISAS / EUR-USD</span>
+                            <span class="text-xs text-slate-500">Hace 1.2 horas</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-2">El diferencial de tipos entre el BCE y la Reserva Federal presiona la paridad Euro-Dólar</h3>
+                        <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                            <strong class="text-blue-400">Visión de Analista:</strong> La velocidad de bajadas de tipos en Fráncfort debilita el euro frente al dólar, encareciendo las importaciones energéticas en la Eurozona.
+                        </p>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs text-blue-400 font-medium">
+                        💡 Impacto: Ventaja competitiva temporal para empresas exportadoras europeas.
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        AlphaTerminal &copy; 2026. Módulo de Análisis de Commodities & Divisas Globales.
+    </footer>
+
+    <!-- SCRIPT DE TRADINGVIEW & CONTROLADORES -->
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        lucide.createIcons();
+
+        let currentSymbol = 'TVC:UKOIL';
+        let currentInterval = 'D';
+
+        function renderChart() {
+            document.getElementById('commodities_tradingview_container').innerHTML = '';
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": currentSymbol,
+                "interval": currentInterval,
+                "timezone": "Europe/Madrid",
+                "theme": "dark",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#0f172a",
+                "enable_publishing": false,
+                "hide_side_toolbar": true,
+                "allow_symbol_change": false,
+                "container_id": "commodities_tradingview_container"
+            });
+        }
+
+        function selectAsset(symbol, name) {
+            currentSymbol = symbol;
+            
+            document.querySelectorAll('.asset-btn').forEach(btn => {
+                btn.className = 'asset-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition-all';
+            });
+            const activeBtn = document.getElementById('btn-' + name);
+            if (activeBtn) {
+                activeBtn.className = 'asset-btn bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all';
+            }
+
+            renderChart();
+        }
+
+        function changeInterval(tf) {
+            currentInterval = tf;
+
+            document.querySelectorAll('.tf-btn').forEach(btn => {
+                btn.className = 'tf-btn text-slate-400 hover:text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all';
+            });
+            const activeTf = document.getElementById('tf-' + tf);
+            if (activeTf) {
+                activeTf.className = 'tf-btn bg-amber-600 text-white px-2.5 py-1 rounded text-xs font-mono font-semibold transition-all';
+            }
+
+            renderChart();
+        }
+
+        window.onload = function() {
+            renderChart();
+        };
+
+        function refreshData() {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('animate-spin');
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                alert('¡Cotizaciones de Petróleo Brent, Oro/EUR y Divisas sincronizadas!');
+            }, 700);
+        }
+    </script>
+</body>
+</html>
